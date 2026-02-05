@@ -1,5 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
-from supabase import create_client
+from supabase import create_client, Client
+
+from dotenv import load_dotenv
 
 import os, uuid, shutil, time, json, math
 import numpy as np
@@ -15,10 +17,15 @@ import numpy as np
 #)
 #from essentia import Pool
 
-SUPABASE_URL = "https://yjcpjkuzpnuurdeybdmd.supabase.co"
-SUPABASE_KEY = "sb_publishable_iSSxd5B0VUvQPrDt98BYaA_e0T-o5Zu"
+load_dotenv()
 
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+print("URL:", SUPABASE_URL)
+print("KEY:", SUPABASE_KEY)
 
 app = FastAPI()
 
@@ -126,3 +133,48 @@ async def upload(file: UploadFile = File(...)):
     os.remove(caminho_local)
 
     return {"status": "ok"}
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
+@app.get("/buscar_generos")
+def buscar_genero(genero: str):
+    resposta = supabase.table("musicas").select("id,arquivo").limit(20).execute()
+    return resposta.data
+
+
+@app.get("/buscar")
+def buscar_musica(arquivo: str):
+    resposta = supabase.table("TESTE_ROCK") \
+        .select("*") \
+        .ilike("arquivo", f"%{arquivo}%") \
+        .execute()
+
+    return resposta.data
+
+
+@app.get("/buscar_genero")
+def buscar_genero(genero: str):
+
+    filtro = (
+        f"genre_discogs400_maest5s_1.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_2.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_3.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_4.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_5.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_6.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_7.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_8.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_9.ilike.%{genero}%,"
+        f"genre_discogs400_maest5s_10.ilike.%{genero}%"
+    )
+
+    resposta = supabase.table("TESTE_ROCK") \
+        .select("arquivo") \
+        .or_(filtro) \
+        .execute()
+
+    return resposta.data
+
+
