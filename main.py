@@ -138,12 +138,6 @@ async def upload(file: UploadFile = File(...)):
 def root():
     return {"status": "ok"}
 
-@app.get("/buscar_generos")
-def buscar_genero(genero: str):
-    resposta = supabase.table("musicas").select("id,arquivo").limit(20).execute()
-    return resposta.data
-
-
 @app.get("/buscar")
 def buscar_musica(arquivo: str):
     resposta = supabase.table("TESTE_ROCK") \
@@ -167,7 +161,27 @@ def buscar_genero(genero: str):
         f"genre_discogs400_maest5s_7.ilike.%{genero}%,"
         f"genre_discogs400_maest5s_8.ilike.%{genero}%,"
         f"genre_discogs400_maest5s_9.ilike.%{genero}%,"
-        f"genre_discogs400_maest5s_10.ilike.%{genero}%"
+        f"genre_discogs400_maest5s_10.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_1.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_2.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_3.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_4.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_5.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_6.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_7.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_8.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_9.ilike.%{genero}%,"
+        f"genre_discogs519_maest30s_10.ilike.%{genero}%,"
+        f"jamendo_genre_1.ilike.%{genero}%,"
+        f"jamendo_genre_2.ilike.%{genero}%,"
+        f"jamendo_genre_3.ilike.%{genero}%,"
+        f"jamendo_genre_4.ilike.%{genero}%,"
+        f"jamendo_genre_5.ilike.%{genero}%,"
+        f"jamendo_genre_6.ilike.%{genero}%,"
+        f"jamendo_genre_7.ilike.%{genero}%,"
+        f"jamendo_genre_8.ilike.%{genero}%,"
+        f"jamendo_genre_9.ilike.%{genero}%,"
+        f"jamendo_genre_10.ilike.%{genero}%"
     )
 
     resposta = supabase.table("TESTE_ROCK") \
@@ -177,4 +191,87 @@ def buscar_genero(genero: str):
 
     return resposta.data
 
+@app.get("/buscar_mood_theme")
+def buscar_mood_theme(mood_theme: str):
 
+    filtro = (
+        f"jamendo_mood_theme_1.ilike.%{mood_theme}%,"
+        f"jamendo_mood_theme_2.ilike.%{mood_theme}%,"
+        f"jamendo_mood_theme_3.ilike.%{mood_theme}%,"
+        f"jamendo_mood_theme_4.ilike.%{mood_theme}%,"
+        f"jamendo_mood_theme_5.ilike.%{mood_theme}%"
+    )
+
+    resposta = supabase.table("TESTE_ROCK") \
+        .select("arquivo") \
+        .or_(filtro) \
+        .execute()
+
+    return resposta.data
+
+@app.get("/buscar_topmagna")
+def buscar_topmagna(topmagna: str):
+
+    filtro = (
+        f"jamendo_top50_tags_1.ilike.%{topmagna}%,"
+        f"jamendo_top50_tags_2.ilike.%{topmagna}%,"
+        f"jamendo_top50_tags_3.ilike.%{topmagna}%,"
+        f"jamendo_top50_tags_4.ilike.%{topmagna}%,"
+        f"jamendo_top50_tags_5.ilike.%{topmagna}%,"
+        f"magnatagatune_1.ilike.%{topmagna}%,"
+        f"magnatagatune_2.ilike.%{topmagna}%,"
+        f"magnatagatune_3.ilike.%{topmagna}%,"
+        f"magnatagatune_4.ilike.%{topmagna}%,"
+        f"magnatagatune_5.ilike.%{topmagna}%"
+    )
+
+    resposta = supabase.table("TESTE_ROCK") \
+        .select("arquivo") \
+        .or_(filtro) \
+        .execute()
+
+    return resposta.data
+
+@app.get("/buscar_instrument")
+def buscar_instrument(instrument: str):
+
+    filtro = (
+        f"jamendo_instrument_2.ilike.%{instrument}%,"
+        f"jamendo_instrument_2.ilike.%{instrument}%,"
+        f"jamendo_instrument_2.ilike.%{instrument}%,"
+        f"jamendo_instrument_2.ilike.%{instrument}%,"
+        f"jamendo_instrument_2.ilike.%{instrument}%"
+    )
+
+    resposta = supabase.table("TESTE_ROCK") \
+        .select("arquivo") \
+        .or_(filtro) \
+        .execute()
+
+    return resposta.data
+
+@app.get("/buscar_moods_mirex")
+def buscar_moods_mirex(moods_mirex: str):
+    resposta = supabase.table("TESTE_ROCK") \
+        .select("arquivo") \
+        .ilike("moods_mirex", f"%{moods_mirex}%") \
+        .execute()
+
+    return resposta.data
+
+@app.get("/buscar_mood")
+def buscar_mood(mood: str):
+
+    filtro = (
+        f"deam_mood_principal.ilike.%{mood}%,"
+        f"deam_moods_vizinhos.ilike.%{mood}%,"
+        f"emo_mood_principal.ilike.%{mood}%,"
+        f"emo_mood_principal.ilike.%{mood}%"
+    )
+
+    resposta = supabase.table("TESTE_ROCK") \
+        .select("arquivo") \
+        .or_(filtro) \
+        .execute()
+
+    return resposta.data
